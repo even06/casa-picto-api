@@ -49,15 +49,30 @@ function ProfessionalsController($location, authService, professionalService, $w
     ctrl.initModal();
   };
   
-  // Initialize Bootstrap modal
+  // Initialize Bootstrap modal - FIXED VERSION
   ctrl.initModal = function() {
     // Wait for DOM to be ready
     angular.element(document).ready(function() {
-      ctrl.formModalElement = document.getElementById('professionalFormModal');
-      if (ctrl.formModalElement) {
-        ctrl.formModalInstance = new $window.bootstrap.Modal(ctrl.formModalElement);
+      // Make sure bootstrap is available
+      if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+        ctrl.formModalElement = document.getElementById('professionalFormModal');
+        if (ctrl.formModalElement) {
+          ctrl.formModalInstance = new bootstrap.Modal(ctrl.formModalElement);
+        }
+      } else {
+        console.error('Bootstrap Modal is not available');
       }
     });
+  };
+
+  // It creates an array of page numbers for pagination
+  ctrl.getPageNumbers = function() {
+    var totalPages = $ctrl.pagination.total_pages || 0;
+    var pages = [];
+    for (var i = 1; i <= totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
   };
   
   // Open modal for adding a new professional
@@ -66,6 +81,9 @@ function ProfessionalsController($location, authService, professionalService, $w
     ctrl.editMode = false;
     if (ctrl.formModalInstance) {
       ctrl.formModalInstance.show();
+    } else {
+      // Fallback if modal isn't initialized
+      ctrl.error = "Modal dialog couldn't be opened. Please try refreshing the page.";
     }
   };
   
@@ -80,6 +98,9 @@ function ProfessionalsController($location, authService, professionalService, $w
     ctrl.editMode = true;
     if (ctrl.formModalInstance) {
       ctrl.formModalInstance.show();
+    } else {
+      // Fallback if modal isn't initialized
+      ctrl.error = "Modal dialog couldn't be opened. Please try refreshing the page.";
     }
   };
   

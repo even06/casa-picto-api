@@ -226,8 +226,10 @@
                 </a>
               </li>
               
-              <li class="page-item" ng-class="{active: $ctrl.pagination.page === page}" 
-                  ng-repeat="page in Array.from({length: $ctrl.pagination.total_pages}, (_, i) => i + 1)">
+              <!-- Fixed pagination logic -->
+              <li class="page-item" 
+                  ng-class="{active: $ctrl.pagination.page === page}" 
+                  ng-repeat="page in $ctrl.getPageNumbers()">
                 <a class="page-link" href ng-click="$event.preventDefault(); $ctrl.changePage(page)">
                   {{page}}
                 </a>
