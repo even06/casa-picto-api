@@ -1,0 +1,25 @@
+{
+  "name": "casa-picto-frontend",
+  "version": "1.0.0",
+  "description": "Healthcare Management System Frontend",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "angular": "^1.8.3",
+    "angular-animate": "^1.8.3",
+    "angular-route": "^1.8.3",
+    "angular-sanitize": "^1.8.3",
+    "bootstrap": "^5.2.3",
+    "bootstrap-icons": "^1.10.3",
+    "jquery": "^3.6.4",
+    "popper.js": "^1.16.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-legacy": "^4.0.3",
+    "vite": "^4.3.9"
+  }
+}

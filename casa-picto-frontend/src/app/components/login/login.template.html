@@ -1,0 +1,69 @@
+<div class="login-container">
+  <div class="login-logo">
+    <h1>Casa Picto</h1>
+    <p>Healthcare Management System</p>
+  </div>
+  
+  <div class="alert alert-danger" ng-if="$ctrl.error">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    {{$ctrl.error}}
+  </div>
+  
+  <form ng-submit="$ctrl.login()" name="loginForm">
+    <div class="mb-3">
+      <label for="username" class="form-label">Username</label>
+      <div class="input-group">
+        <span class="input-group-text">
+          <i class="bi bi-person"></i>
+        </span>
+        <input 
+          type="text" 
+          class="form-control" 
+          id="username" 
+          ng-model="$ctrl.credentials.username" 
+          required
+          autocomplete="username"
+          ng-disabled="$ctrl.isLoading">
+      </div>
+    </div>
+    
+    <div class="mb-4">
+      <label for="password" class="form-label">Password</label>
+      <div class="input-group">
+        <span class="input-group-text">
+          <i class="bi bi-lock"></i>
+        </span>
+        <input 
+          type="password" 
+          class="form-control" 
+          id="password" 
+          ng-model="$ctrl.credentials.password" 
+          required
+          autocomplete="current-password"
+          ng-disabled="$ctrl.isLoading">
+      </div>
+    </div>
+    
+    <div class="d-grid gap-2">
+      <button 
+        type="submit" 
+        class="btn btn-primary" 
+        ng-disabled="loginForm.$invalid || $ctrl.isLoading">
+        <span ng-if="$ctrl.isLoading">
+          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Signing in...
+        </span>
+        <span ng-if="!$ctrl.isLoading">
+          <i class="bi bi-box-arrow-in-right me-2"></i>
+          Sign In
+        </span>
+      </button>
+    </div>
+  </form>
+  
+  <div class="text-center mt-4">
+    <small class="text-muted">
+      &copy; {{currentYear}} Casa Picto. All rights reserved.
+    </small>
+  </div>
+</div>

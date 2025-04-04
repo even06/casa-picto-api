@@ -1,9 +1,33 @@
-RewriteEngine On
-RewriteBase /casa-picto/
+<IfModule mod_rewrite.c>
+  RewriteEngine On
 
-# Ignore actual files and directories
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
+  # ------------------------------------------
+  # 1) Force www + HTTPS (optional)
+  # ------------------------------------------
+  # If you also need HTTPS, un-comment the HTTPS condition and combine them
+  # RewriteCond %{HTTPS} !=on [OR]
+  RewriteCond %{HTTP_HOST} !^www\. [NC]
+  RewriteRule ^(.*)$ https://www.casapicto.com/casapictov2/$1 [L,R=301]
 
-# Rewrite /api/path/to/endpoint to /api/path/to/endpoint.php
-RewriteRule ^api/(.+)$ api/$1.php [L,QSA]
+  # ------------------------------------------
+  # 2) Set rewrite base to /casapictov2/
+  # ------------------------------------------
+  RewriteBase /casapictov2/
+
+  # ------------------------------------------
+  # 3) Rewrite API calls to .php files
+  # ------------------------------------------
+  # For example, /api/auth/login -> /api/auth/login.php
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^api/(.+)$ api/$1.php [L,QSA]
+
+  # ------------------------------------------
+  # 4) Rewrite everything else to your SPA
+  # ------------------------------------------
+  # e.g. /login, /dashboard => dist/index.html
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^.*$ dist/index.html [L]
+
+</IfModule>

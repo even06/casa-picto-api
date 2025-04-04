@@ -56,7 +56,7 @@ function validateToken() {
 
 // Helper function for CORS
 function handleCORS() {
-    header("Access-Control-Allow-Origin: *");
+    header("Access-Control-Allow-Origin: *"); // You might want to restrict this to your domain
     header("Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE");
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
     
@@ -64,3 +64,6 @@ function handleCORS() {
         exit(0);
     }
 }
+
+// Automatically call handleCORS() when this file is included
+handleCORS();

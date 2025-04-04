@@ -1,0 +1,247 @@
+<div>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light navbar-casapicto mb-4">
+    <div class="col-auto d-flex align-items-end">
+            <button class="btn btn-outline-secondary" ng-click="$ctrl.resetFilters()">
+              <i class="bi bi-x-circle me-1"></i>
+              Reset
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Professionals Table -->
+    <div class="card">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover table-professionals mb-0">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Specialty</th>
+                <th>Active Patients</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Loading Indicator -->
+              <tr ng-if="$ctrl.isLoading">
+                <td colspan="6" class="text-center py-4">
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <p class="mt-2 mb-0">Loading professionals...</p>
+                </td>
+              </tr>
+              
+              <!-- No Results -->
+              <tr ng-if="!$ctrl.isLoading && $ctrl.professionals.length === 0">
+                <td colspan="6" class="text-center py-4">
+                  <i class="bi bi-search fs-1 text-muted"></i>
+                  <p class="mt-2 mb-0">No professionals found matching the criteria.</p>
+                </td>
+              </tr>
+              
+              <!-- Professional Items -->
+              <tr ng-repeat="pro in $ctrl.professionals" ng-click="$ctrl.viewProfessional(pro.id)" style="cursor: pointer;">
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="me-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                      <i class="bi bi-person text-primary"></i>
+                    </div>
+                    <div>
+                      <div class="fw-bold">{{pro.name}}</div>
+                      <div class="small text-muted">ID: {{pro.id}}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>{{pro.username}}</td>
+                <td>{{pro.specialty}}</td>
+                <td>{{pro.active_patients}}</td>
+                <td>
+                  <span class="badge rounded-pill" ng-class="{'bg-success': pro.is_active, 'bg-danger': !pro.is_active}">
+                    <i class="bi" ng-class="{'bi-check-circle-fill': pro.is_active, 'bi-x-circle-fill': !pro.is_active}"></i>
+                    {{pro.is_active ? 'Active' : 'Inactive'}}
+                  </span>
+                </td>
+                <td>
+                  <div class="btn-group">
+                    <button class="btn btn-sm btn-outline-primary" ng-click="$event.stopPropagation(); $ctrl.viewProfessional(pro.id)">
+                      <i class="bi bi-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary" ng-click="$event.stopPropagation();">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Pagination -->
+      <div class="card-footer bg-white" ng-if="$ctrl.pagination.total > 0">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <span class="text-muted">
+              Showing {{($ctrl.pagination.page - 1) * $ctrl.pagination.limit + 1}} to 
+              {{Math.min($ctrl.pagination.page * $ctrl.pagination.limit, $ctrl.pagination.total)}} of 
+              {{$ctrl.pagination.total}} professionals
+            </span>
+          </div>
+          
+          <nav aria-label="Professionals pagination">
+            <ul class="pagination mb-0">
+              <li class="page-item" ng-class="{disabled: $ctrl.pagination.page === 1}">
+                <a class="page-link" href ng-click="$event.preventDefault(); $ctrl.changePage($ctrl.pagination.page - 1)">
+                  <i class="bi bi-chevron-left"></i>
+                </a>
+              </li>
+              
+              <li class="page-item" ng-class="{active: $ctrl.pagination.page === page}" 
+                  ng-repeat="page in Array.from({length: $ctrl.pagination.total_pages}, (_, i) => i + 1)">
+                <a class="page-link" href ng-click="$event.preventDefault(); $ctrl.changePage(page)">
+                  {{page}}
+                </a>
+              </li>
+              
+              <li class="page-item" ng-class="{disabled: $ctrl.pagination.page === $ctrl.pagination.total_pages}">
+                <a class="page-link" href ng-click="$event.preventDefault(); $ctrl.changePage($ctrl.pagination.page + 1)">
+                  <i class="bi bi-chevron-right"></i>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>="col-md-2 d-flex align-items-end">
+            <button class="btn btn-primary w-100" ng-click="$ctrl.applyFilters()">
+              <i class="bi bi-filter me-1"></i>
+              Apply
+            </button>
+          </div>
+          
+          <div class="col-md-3">
+            <label class="form-label">Status</label>
+            <select class="form-select" ng-model="$ctrl.filters.isActive">
+              <option value="">All Status</option>
+              <option value="true">Active</option>
+              <option value="false">Inactive</option>
+            </select>
+          </div>
+          
+          <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <i class="bi bi-heart-pulse me-2"></i>
+        Casa Picto
+      </a>
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" href="#/professionals">
+              <i class="bi bi-people me-1"></i>
+              Professionals
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#/patients">
+              <i class="bi bi-person me-1"></i>
+              Patients
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#/schedule">
+              <i class="bi bi-calendar-week me-1"></i>
+              Schedule
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#/reports">
+              <i class="bi bi-bar-chart me-1"></i>
+              Reports
+            </a>
+          </li>
+        </ul>
+        
+        <div class="d-flex align-items-center">
+          <span class="me-3">
+            <i class="bi bi-person-circle me-1"></i>
+            {{$ctrl.currentUser.name || $ctrl.currentUser.username}}
+          </span>
+          <button class="btn btn-outline-secondary btn-sm" ng-click="$ctrl.logout()">
+            <i class="bi bi-box-arrow-right me-1"></i>
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="container">
+    <!-- Page Header -->
+    <div class="row mb-4">
+      <div class="col">
+        <h2>
+          <i class="bi bi-people me-2"></i>
+          Professionals
+        </h2>
+        <p class="text-muted">Manage healthcare professionals and their availability</p>
+      </div>
+      <div class="col-auto">
+        <button class="btn btn-primary">
+          <i class="bi bi-plus-circle me-2"></i>
+          Add Professional
+        </button>
+      </div>
+    </div>
+    
+    <!-- Error Alert -->
+    <div class="alert alert-danger" ng-if="$ctrl.error">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      {{$ctrl.error}}
+    </div>
+    
+    <!-- Filters -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <i class="bi bi-funnel me-2"></i>
+        Filters
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label">Search</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi bi-search"></i>
+              </span>
+              <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Name or specialty" 
+                ng-model="$ctrl.filters.search">
+            </div>
+          </div>
+          
+          <div class="col-md-3">
+            <label class="form-label">Specialty</label>
+            <select class="form-select" ng-model="$ctrl.filters.specialty">
+              <option value="">All Specialties</option>
+              <option ng-repeat="specialty in $ctrl.specialties" value="{{specialty}}">
+                {{specialty}}
+              </option>
+            </select>
+          </div>
+          
+          <div class
