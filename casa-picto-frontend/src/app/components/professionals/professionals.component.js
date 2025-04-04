@@ -67,7 +67,7 @@ function ProfessionalsController($location, authService, professionalService, $w
 
   // It creates an array of page numbers for pagination
   ctrl.getPageNumbers = function() {
-    var totalPages = $ctrl.pagination.total_pages || 0;
+    var totalPages = ctrl.pagination.total_pages || 0;
     var pages = [];
     for (var i = 1; i <= totalPages; i++) {
       pages.push(i);
