@@ -21,3 +21,4 @@ import './src/app/services/http-interceptor.service';
 // Import components
 import './src/app/components/login/login.component';
 import './src/app/components/professionals/professionals.component';
+import './src/app/components/professionals/professional-form.component';

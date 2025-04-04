@@ -4,10 +4,10 @@ import templateHtml from './professionals.template.html?raw';
 angular.module('casaPictoApp')
   .component('professionals', {
     template: templateHtml,
-    controller: ['$location', 'authService', 'professionalService', ProfessionalsController]
+    controller: ['$location', 'authService', 'professionalService', '$window', ProfessionalsController]
   });
 
-function ProfessionalsController($location, authService, professionalService) {
+function ProfessionalsController($location, authService, professionalService, $window) {
   var ctrl = this;
   
   // Make Math and Array available to the template
@@ -27,6 +27,9 @@ function ProfessionalsController($location, authService, professionalService) {
     totalPages: 0
   };
   
+  // Selected professional for editing
+  ctrl.selectedProfessional = null;
+  
   // Filters
   ctrl.filters = {
     search: '',
@@ -37,9 +40,57 @@ function ProfessionalsController($location, authService, professionalService) {
   // UI states
   ctrl.isLoading = true;
   ctrl.error = null;
+  ctrl.formModalInstance = null;
   
   // Initialize component
   ctrl.$onInit = function() {
+    ctrl.loadProfessionals();
+    // Initialize Bootstrap modal
+    ctrl.initModal();
+  };
+  
+  // Initialize Bootstrap modal
+  ctrl.initModal = function() {
+    // Wait for DOM to be ready
+    angular.element(document).ready(function() {
+      ctrl.formModalElement = document.getElementById('professionalFormModal');
+      if (ctrl.formModalElement) {
+        ctrl.formModalInstance = new $window.bootstrap.Modal(ctrl.formModalElement);
+      }
+    });
+  };
+  
+  // Open modal for adding a new professional
+  ctrl.openAddModal = function() {
+    ctrl.selectedProfessional = null;
+    ctrl.editMode = false;
+    if (ctrl.formModalInstance) {
+      ctrl.formModalInstance.show();
+    }
+  };
+  
+  // Open modal for editing an existing professional
+  ctrl.openEditModal = function(professional, event) {
+    // Stop event propagation to prevent navigation
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    ctrl.selectedProfessional = professional;
+    ctrl.editMode = true;
+    if (ctrl.formModalInstance) {
+      ctrl.formModalInstance.show();
+    }
+  };
+  
+  // Handle save from modal
+  ctrl.onProfessionalSaved = function(professional) {
+    // Hide modal
+    if (ctrl.formModalInstance) {
+      ctrl.formModalInstance.hide();
+    }
+    
+    // Refresh list
     ctrl.loadProfessionals();
   };
   
