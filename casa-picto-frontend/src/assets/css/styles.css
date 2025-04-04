@@ -126,3 +126,33 @@ body {
   background-color: rgba(0, 0, 0, 0.02);
   font-weight: 600;
 }
+/* Modal visibility fixes */
+.modal {
+  display: block !important;
+  opacity: 1 !important;
+}
+
+.modal-backdrop {
+  opacity: 0.5 !important;
+}
+
+.modal-dialog {
+  margin: 30px auto !important;
+  z-index: 1050 !important;
+}
+
+/* If using fade animations */
+.fade.in {
+  opacity: 1 !important;
+}
+
+/* Bootstrap 5 compatibility fixes for ui-bootstrap (which was built for Bootstrap 3) */
+.modal-dialog .modal-content {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+/* Fix backdrop positioning */
+.modal-backdrop.in {
+  z-index: 1040 !important;
+}

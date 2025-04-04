@@ -3,7 +3,7 @@ angular.module('casaPictoApp', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ui.bootst
 
 // Then configure it separately
 angular.module('casaPictoApp')
-  .config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
+  .config(['$routeProvider', '$httpProvider', '$uibModalProvider', function($routeProvider, $httpProvider, $uibModalProvider) {
     // Configure routes
     $routeProvider
       .when('/login', {
@@ -20,6 +20,10 @@ angular.module('casaPictoApp')
     
     // Add auth interceptor
     $httpProvider.interceptors.push('httpInterceptor');
+    
+    // Configure ui-bootstrap modals
+    $uibModalProvider.options.backdrop = true;
+    $uibModalProvider.options.keyboard = true;
   }]);
 
 // Run block

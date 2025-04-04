@@ -9,10 +9,10 @@ angular.module('casaPictoApp')
       close: '&',
       dismiss: '&'
     },
-    controller: ['$http', 'apiConfigService', ProfessionalFormController]
+    controller: ['$scope', '$http', 'apiConfigService', ProfessionalFormController]
   });
 
-function ProfessionalFormController($http, apiConfigService) {
+function ProfessionalFormController($scope, $http, apiConfigService) {
   var ctrl = this;
   
   // UI states
@@ -32,6 +32,12 @@ function ProfessionalFormController($http, apiConfigService) {
     };
     
     ctrl.editMode = ctrl.resolve.editMode || false;
+    
+    // Debugging
+    console.log('Professional Form Component Initialized', {
+      professional: ctrl.professional,
+      editMode: ctrl.editMode
+    });
   };
   
   // Toggle password visibility
@@ -41,6 +47,7 @@ function ProfessionalFormController($http, apiConfigService) {
   
   // Cancel the form
   ctrl.cancel = function() {
+    console.log('Dismissing modal');
     ctrl.dismiss();
   };
   
@@ -91,12 +98,14 @@ function ProfessionalFormController($http, apiConfigService) {
       data: requestData
     }).then(function(response) {
       if (response.data && response.data.success) {
+        console.log('Professional saved successfully', response.data);
         // Close modal with the updated professional
         ctrl.close({$value: response.data.data});
       } else {
         ctrl.formError = 'Error saving professional. Please try again.';
       }
     }).catch(function(error) {
+      console.error('Error saving professional', error);
       ctrl.formError = error.data && error.data.error ? 
         error.data.error.message : 
         'Failed to save professional. Please try again.';

@@ -44,8 +44,13 @@ function ProfessionalsController($location, authService, professionalService, $u
   
   // Open modal for adding a new professional
   ctrl.openAddModal = function() {
+    console.log('Opening add professional modal');
+    
     var modalInstance = $uibModal.open({
+      animation: true,
       component: 'professionalForm',
+      backdrop: 'static',
+      size: 'lg',
       resolve: {
         professional: function() {
           return null;
@@ -58,6 +63,7 @@ function ProfessionalsController($location, authService, professionalService, $u
 
     modalInstance.result.then(function(professional) {
       // Handle when modal is closed with a result
+      console.log('Modal closed with result', professional);
       ctrl.loadProfessionals();
     }, function() {
       // Handle when modal is dismissed
@@ -72,8 +78,13 @@ function ProfessionalsController($location, authService, professionalService, $u
       event.stopPropagation();
     }
     
+    console.log('Opening edit professional modal', professional);
+    
     var modalInstance = $uibModal.open({
+      animation: true,
       component: 'professionalForm',
+      backdrop: 'static',
+      size: 'lg',
       resolve: {
         professional: function() {
           return angular.copy(professional);
@@ -86,6 +97,7 @@ function ProfessionalsController($location, authService, professionalService, $u
 
     modalInstance.result.then(function(updatedProfessional) {
       // Handle when modal is closed with a result
+      console.log('Modal closed with result', updatedProfessional);
       ctrl.loadProfessionals();
     }, function() {
       // Handle when modal is dismissed

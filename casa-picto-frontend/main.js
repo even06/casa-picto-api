@@ -7,8 +7,12 @@ import angular from 'angular';
 import 'angular-route';
 import 'angular-sanitize';
 import 'angular-animate';
-import 'angular-ui-bootstrap';  // Add this line
+import 'angular-ui-bootstrap';
+import jquery from 'jquery';
+import * as bootstrap from 'bootstrap';
 
+window.$ = window.jQuery = jquery;
+window.bootstrap = bootstrap;
 // Import our app module
 import './src/app/app';
 
