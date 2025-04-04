@@ -7,7 +7,7 @@ import angular from 'angular';
 import 'angular-route';
 import 'angular-sanitize';
 import 'angular-animate';
-import 'bootstrap';
+import 'angular-ui-bootstrap';  // Add this line
 
 // Import our app module
 import './src/app/app';

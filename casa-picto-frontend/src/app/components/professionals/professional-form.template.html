@@ -1,145 +1,142 @@
-<div class="modal fade" id="professionalFormModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">
-          <i class="bi" ng-class="{'bi-plus-circle': !$ctrl.editMode, 'bi-pencil-square': $ctrl.editMode}"></i>
-          {{$ctrl.editMode ? 'Edit Professional' : 'Add New Professional'}}
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<!-- No need for modal-specific markup as ui-bootstrap handles this -->
+<div>
+  <div class="modal-header">
+    <h5 class="modal-title">
+      <i class="bi" ng-class="{'bi-plus-circle': !$ctrl.editMode, 'bi-pencil-square': $ctrl.editMode}"></i>
+      {{$ctrl.editMode ? 'Edit Professional' : 'Add New Professional'}}
+    </h5>
+    <button type="button" class="btn-close" ng-click="$ctrl.cancel()"></button>
+  </div>
+  
+  <form name="professionalForm" ng-submit="$ctrl.saveProfessional(professionalForm)" novalidate>
+    <div class="modal-body">
+      <!-- Alert for errors -->
+      <div class="alert alert-danger" ng-if="$ctrl.formError">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        {{$ctrl.formError}}
       </div>
       
-      <form name="professionalForm" ng-submit="$ctrl.saveProfessional(professionalForm)" novalidate>
-        <div class="modal-body">
-          <!-- Alert for errors -->
-          <div class="alert alert-danger" ng-if="$ctrl.formError">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            {{$ctrl.formError}}
-          </div>
-          
-          <div class="row g-3">
-            <!-- Personal Information -->
-            <div class="col-12">
-              <h6 class="border-bottom pb-2">Personal Information</h6>
-            </div>
-            
-            <div class="col-md-6">
-              <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
-              <input 
-                type="text" 
-                class="form-control" 
-                id="name" 
-                name="name"
-                ng-model="$ctrl.professional.name" 
-                required
-                ng-class="{'is-invalid': professionalForm.name.$invalid && professionalForm.name.$touched}">
-              <div class="invalid-feedback" ng-show="professionalForm.name.$invalid && professionalForm.name.$touched">
-                Full name is required
-              </div>
-            </div>
-            
-            <div class="col-md-6">
-              <label for="specialty" class="form-label">Specialty <span class="text-danger">*</span></label>
-              <input 
-                type="text" 
-                class="form-control" 
-                id="specialty" 
-                name="specialty"
-                ng-model="$ctrl.professional.specialty" 
-                required
-                ng-class="{'is-invalid': professionalForm.specialty.$invalid && professionalForm.specialty.$touched}">
-              <div class="invalid-feedback" ng-show="professionalForm.specialty.$invalid && professionalForm.specialty.$touched">
-                Specialty is required
-              </div>
-            </div>
-            
-            <!-- Account Information (only for new professionals) -->
-            <div class="col-12" ng-if="!$ctrl.editMode">
-              <h6 class="border-bottom pb-2 mt-3">Account Information</h6>
-            </div>
-            
-            <div class="col-md-6" ng-if="!$ctrl.editMode">
-              <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
-              <input 
-                type="text" 
-                class="form-control" 
-                id="username" 
-                name="username"
-                ng-model="$ctrl.professional.username" 
-                required
-                ng-pattern="/^[a-zA-Z0-9._-]+$/"
-                ng-class="{'is-invalid': professionalForm.username.$invalid && professionalForm.username.$touched}">
-              <div class="invalid-feedback" ng-show="professionalForm.username.$invalid && professionalForm.username.$touched">
-                <span ng-show="professionalForm.username.$error.required">Username is required</span>
-                <span ng-show="professionalForm.username.$error.pattern">Username can only contain letters, numbers, and ._-</span>
-              </div>
-            </div>
-            
-            <div class="col-md-6" ng-if="!$ctrl.editMode">
-              <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
-              <div class="input-group">
-                <input 
-                  type="{{$ctrl.showPassword ? 'text' : 'password'}}" 
-                  class="form-control" 
-                  id="password" 
-                  name="password"
-                  ng-model="$ctrl.professional.password" 
-                  required
-                  ng-minlength="8"
-                  ng-class="{'is-invalid': professionalForm.password.$invalid && professionalForm.password.$touched}">
-                <button class="btn btn-outline-secondary" type="button" ng-click="$ctrl.togglePassword()">
-                  <i class="bi" ng-class="{'bi-eye-fill': !$ctrl.showPassword, 'bi-eye-slash-fill': $ctrl.showPassword}"></i>
-                </button>
-                <div class="invalid-feedback" ng-show="professionalForm.password.$invalid && professionalForm.password.$touched">
-                  <span ng-show="professionalForm.password.$error.required">Password is required</span>
-                  <span ng-show="professionalForm.password.$error.minlength">Password must be at least 8 characters</span>
-                </div>
-              </div>
-              <small class="form-text text-muted">
-                Minimum 8 characters
-              </small>
-            </div>
-            
-            <!-- Shared fields for both add/edit -->
-            <div class="col-12">
-              <h6 class="border-bottom pb-2 mt-3">Status</h6>
-            </div>
-            
-            <div class="col-md-6">
-              <div class="form-check form-switch">
-                <input 
-                  class="form-check-input" 
-                  type="checkbox" 
-                  id="is_active" 
-                  ng-model="$ctrl.professional.is_active">
-                <label class="form-check-label" for="is_active">
-                  Active Professional
-                </label>
-              </div>
-              <small class="form-text text-muted">
-                Inactive professionals won't appear in scheduling options
-              </small>
-            </div>
+      <div class="row g-3">
+        <!-- Personal Information -->
+        <div class="col-12">
+          <h6 class="border-bottom pb-2">Personal Information</h6>
+        </div>
+        
+        <div class="col-md-6">
+          <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="name" 
+            name="name"
+            ng-model="$ctrl.professional.name" 
+            required
+            ng-class="{'is-invalid': professionalForm.name.$invalid && professionalForm.name.$touched}">
+          <div class="invalid-feedback" ng-show="professionalForm.name.$invalid && professionalForm.name.$touched">
+            Full name is required
           </div>
         </div>
         
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button 
-            type="submit" 
-            class="btn btn-primary" 
-            ng-disabled="professionalForm.$invalid || $ctrl.isSubmitting">
-            <span ng-if="$ctrl.isSubmitting">
-              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-              Saving...
-            </span>
-            <span ng-if="!$ctrl.isSubmitting">
-              <i class="bi" ng-class="{'bi-plus-lg': !$ctrl.editMode, 'bi-check-lg': $ctrl.editMode}"></i>
-              {{$ctrl.editMode ? 'Update Professional' : 'Add Professional'}}
-            </span>
-          </button>
+        <div class="col-md-6">
+          <label for="specialty" class="form-label">Specialty <span class="text-danger">*</span></label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="specialty" 
+            name="specialty"
+            ng-model="$ctrl.professional.specialty" 
+            required
+            ng-class="{'is-invalid': professionalForm.specialty.$invalid && professionalForm.specialty.$touched}">
+          <div class="invalid-feedback" ng-show="professionalForm.specialty.$invalid && professionalForm.specialty.$touched">
+            Specialty is required
+          </div>
         </div>
-      </form>
+        
+        <!-- Account Information (only for new professionals) -->
+        <div class="col-12" ng-if="!$ctrl.editMode">
+          <h6 class="border-bottom pb-2 mt-3">Account Information</h6>
+        </div>
+        
+        <div class="col-md-6" ng-if="!$ctrl.editMode">
+          <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="username" 
+            name="username"
+            ng-model="$ctrl.professional.username" 
+            required
+            ng-pattern="/^[a-zA-Z0-9._-]+$/"
+            ng-class="{'is-invalid': professionalForm.username.$invalid && professionalForm.username.$touched}">
+          <div class="invalid-feedback" ng-show="professionalForm.username.$invalid && professionalForm.username.$touched">
+            <span ng-show="professionalForm.username.$error.required">Username is required</span>
+            <span ng-show="professionalForm.username.$error.pattern">Username can only contain letters, numbers, and ._-</span>
+          </div>
+        </div>
+        
+        <div class="col-md-6" ng-if="!$ctrl.editMode">
+          <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+          <div class="input-group">
+            <input 
+              type="{{$ctrl.showPassword ? 'text' : 'password'}}" 
+              class="form-control" 
+              id="password" 
+              name="password"
+              ng-model="$ctrl.professional.password" 
+              required
+              ng-minlength="8"
+              ng-class="{'is-invalid': professionalForm.password.$invalid && professionalForm.password.$touched}">
+            <button class="btn btn-outline-secondary" type="button" ng-click="$ctrl.togglePassword()">
+              <i class="bi" ng-class="{'bi-eye-fill': !$ctrl.showPassword, 'bi-eye-slash-fill': $ctrl.showPassword}"></i>
+            </button>
+            <div class="invalid-feedback" ng-show="professionalForm.password.$invalid && professionalForm.password.$touched">
+              <span ng-show="professionalForm.password.$error.required">Password is required</span>
+              <span ng-show="professionalForm.password.$error.minlength">Password must be at least 8 characters</span>
+            </div>
+          </div>
+          <small class="form-text text-muted">
+            Minimum 8 characters
+          </small>
+        </div>
+        
+        <!-- Shared fields for both add/edit -->
+        <div class="col-12">
+          <h6 class="border-bottom pb-2 mt-3">Status</h6>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="form-check form-switch">
+            <input 
+              class="form-check-input" 
+              type="checkbox" 
+              id="is_active" 
+              ng-model="$ctrl.professional.is_active">
+            <label class="form-check-label" for="is_active">
+              Active Professional
+            </label>
+          </div>
+          <small class="form-text text-muted">
+            Inactive professionals won't appear in scheduling options
+          </small>
+        </div>
+      </div>
     </div>
-  </div>
+    
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" ng-click="$ctrl.cancel()">Cancel</button>
+      <button 
+        type="submit" 
+        class="btn btn-primary" 
+        ng-disabled="professionalForm.$invalid || $ctrl.isSubmitting">
+        <span ng-if="$ctrl.isSubmitting">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Saving...
+        </span>
+        <span ng-if="!$ctrl.isSubmitting">
+          <i class="bi" ng-class="{'bi-plus-lg': !$ctrl.editMode, 'bi-check-lg': $ctrl.editMode}"></i>
+          {{$ctrl.editMode ? 'Update Professional' : 'Add Professional'}}
+        </span>
+      </button>
+    </div>
+  </form>
 </div>

@@ -4,15 +4,14 @@ import templateHtml from './professionals.template.html?raw';
 angular.module('casaPictoApp')
   .component('professionals', {
     template: templateHtml,
-    controller: ['$location', 'authService', 'professionalService', '$window', ProfessionalsController]
+    controller: ['$location', 'authService', 'professionalService', '$uibModal', ProfessionalsController]
   });
 
-function ProfessionalsController($location, authService, professionalService, $window) {
+function ProfessionalsController($location, authService, professionalService, $uibModal) {
   var ctrl = this;
   
-  // Make Math and Array available to the template
+  // Make Math available to the template
   ctrl.Math = window.Math;
-  ctrl.Array = window.Array;
   
   // Current user
   ctrl.currentUser = authService.getCurrentUser();
@@ -27,9 +26,6 @@ function ProfessionalsController($location, authService, professionalService, $w
     totalPages: 0
   };
   
-  // Selected professional for editing
-  ctrl.selectedProfessional = null;
-  
   // Filters
   ctrl.filters = {
     search: '',
@@ -40,51 +36,33 @@ function ProfessionalsController($location, authService, professionalService, $w
   // UI states
   ctrl.isLoading = true;
   ctrl.error = null;
-  ctrl.formModalInstance = null;
   
   // Initialize component
   ctrl.$onInit = function() {
     ctrl.loadProfessionals();
-    // Initialize Bootstrap modal
-    ctrl.initModal();
-  };
-  
-  // Initialize Bootstrap modal - FIXED VERSION
-  ctrl.initModal = function() {
-    // Wait for DOM to be ready
-    angular.element(document).ready(function() {
-      // Make sure bootstrap is available
-      if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-        ctrl.formModalElement = document.getElementById('professionalFormModal');
-        if (ctrl.formModalElement) {
-          ctrl.formModalInstance = new bootstrap.Modal(ctrl.formModalElement);
-        }
-      } else {
-        console.error('Bootstrap Modal is not available');
-      }
-    });
-  };
-
-  // It creates an array of page numbers for pagination
-  ctrl.getPageNumbers = function() {
-    var totalPages = ctrl.pagination.total_pages || 0;
-    var pages = [];
-    for (var i = 1; i <= totalPages; i++) {
-      pages.push(i);
-    }
-    return pages;
   };
   
   // Open modal for adding a new professional
   ctrl.openAddModal = function() {
-    ctrl.selectedProfessional = null;
-    ctrl.editMode = false;
-    if (ctrl.formModalInstance) {
-      ctrl.formModalInstance.show();
-    } else {
-      // Fallback if modal isn't initialized
-      ctrl.error = "Modal dialog couldn't be opened. Please try refreshing the page.";
-    }
+    var modalInstance = $uibModal.open({
+      component: 'professionalForm',
+      resolve: {
+        professional: function() {
+          return null;
+        },
+        editMode: function() {
+          return false;
+        }
+      }
+    });
+
+    modalInstance.result.then(function(professional) {
+      // Handle when modal is closed with a result
+      ctrl.loadProfessionals();
+    }, function() {
+      // Handle when modal is dismissed
+      console.log('Modal dismissed');
+    });
   };
   
   // Open modal for editing an existing professional
@@ -94,25 +72,35 @@ function ProfessionalsController($location, authService, professionalService, $w
       event.stopPropagation();
     }
     
-    ctrl.selectedProfessional = professional;
-    ctrl.editMode = true;
-    if (ctrl.formModalInstance) {
-      ctrl.formModalInstance.show();
-    } else {
-      // Fallback if modal isn't initialized
-      ctrl.error = "Modal dialog couldn't be opened. Please try refreshing the page.";
-    }
+    var modalInstance = $uibModal.open({
+      component: 'professionalForm',
+      resolve: {
+        professional: function() {
+          return angular.copy(professional);
+        },
+        editMode: function() {
+          return true;
+        }
+      }
+    });
+
+    modalInstance.result.then(function(updatedProfessional) {
+      // Handle when modal is closed with a result
+      ctrl.loadProfessionals();
+    }, function() {
+      // Handle when modal is dismissed
+      console.log('Modal dismissed');
+    });
   };
   
-  // Handle save from modal
-  ctrl.onProfessionalSaved = function(professional) {
-    // Hide modal
-    if (ctrl.formModalInstance) {
-      ctrl.formModalInstance.hide();
+  // It creates an array of page numbers for pagination
+  ctrl.getPageNumbers = function() {
+    var totalPages = ctrl.pagination.total_pages || 0;
+    var pages = [];
+    for (var i = 1; i <= totalPages; i++) {
+      pages.push(i);
     }
-    
-    // Refresh list
-    ctrl.loadProfessionals();
+    return pages;
   };
   
   // Load professionals with current filters and pagination

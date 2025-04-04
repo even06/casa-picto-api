@@ -4,13 +4,12 @@ import templateHtml from './professional-form.template.html?raw';
 angular.module('casaPictoApp')
   .component('professionalForm', {
     template: templateHtml,
-    controller: ['$http', 'apiConfigService', ProfessionalFormController],
     bindings: {
-      professional: '<',  // Input: professional object to edit
-      editMode: '<',      // Input: true if editing, false if adding
-      onSave: '&',        // Output: callback when professional is saved
-      onCancel: '&'       // Output: callback when cancel is clicked
-    }
+      resolve: '<',
+      close: '&',
+      dismiss: '&'
+    },
+    controller: ['$http', 'apiConfigService', ProfessionalFormController]
   });
 
 function ProfessionalFormController($http, apiConfigService) {
@@ -23,32 +22,26 @@ function ProfessionalFormController($http, apiConfigService) {
   
   // Initialize component
   ctrl.$onInit = function() {
-    // Default values for new professional
-    if (!ctrl.editMode) {
-      ctrl.professional = {
-        name: '',
-        specialty: '',
-        username: '',
-        password: '',
-        is_active: true
-      };
-    }
-  };
-  
-  // Handle input changes when professional binding updates
-  ctrl.$onChanges = function(changes) {
-    if (changes.professional && changes.professional.currentValue) {
-      // Clone the object to avoid modifying the parent
-      ctrl.professional = angular.copy(changes.professional.currentValue);
-      
-      // Ensure Boolean type for is_active (in case it comes as 0/1)
-      ctrl.professional.is_active = !!ctrl.professional.is_active;
-    }
+    // Get resolved values
+    ctrl.professional = ctrl.resolve.professional || {
+      name: '',
+      specialty: '',
+      username: '',
+      password: '',
+      is_active: true
+    };
+    
+    ctrl.editMode = ctrl.resolve.editMode || false;
   };
   
   // Toggle password visibility
   ctrl.togglePassword = function() {
     ctrl.showPassword = !ctrl.showPassword;
+  };
+  
+  // Cancel the form
+  ctrl.cancel = function() {
+    ctrl.dismiss();
   };
   
   // Save professional (create or update)
@@ -98,8 +91,8 @@ function ProfessionalFormController($http, apiConfigService) {
       data: requestData
     }).then(function(response) {
       if (response.data && response.data.success) {
-        // Notify parent component
-        ctrl.onSave({ professional: response.data.data });
+        // Close modal with the updated professional
+        ctrl.close({$value: response.data.data});
       } else {
         ctrl.formError = 'Error saving professional. Please try again.';
       }

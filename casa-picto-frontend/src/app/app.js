@@ -1,5 +1,5 @@
 // Initialize the main app module first
-angular.module('casaPictoApp', ['ngRoute', 'ngSanitize', 'ngAnimate']);
+angular.module('casaPictoApp', ['ngRoute', 'ngSanitize', 'ngAnimate', 'ui.bootstrap']);
 
 // Then configure it separately
 angular.module('casaPictoApp')
