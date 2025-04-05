@@ -24,6 +24,7 @@ import './src/app/services/auth.service';
 import './src/app/services/professional.service';
 import './src/app/services/professional-availability.service';
 import './src/app/services/patient.service';
+import './src/app/services/insurance.service';
 import './src/app/services/http-interceptor.service';
 
 // Import components
@@ -33,3 +34,5 @@ import './src/app/components/professionals/professional-form.component';
 import './src/app/components/professionals/professional-detail.component';
 import './src/app/components/professionals/professional-availability.component';
 import './src/app/components/patients/patients.component';
+import './src/app/components/patients/patient-form.component';
+import './src/app/components/patients/patient-detail.component';

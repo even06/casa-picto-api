@@ -1,0 +1,222 @@
+<!-- No need for modal-specific markup as ui-bootstrap handles this -->
+<div>
+  <div class="modal-header">
+    <h5 class="modal-title">
+      <i class="bi" ng-class="{'bi-plus-circle': !$ctrl.editMode, 'bi-pencil-square': $ctrl.editMode}"></i>
+      {{$ctrl.editMode ? 'Edit Patient' : 'Add New Patient'}}
+    </h5>
+    <button type="button" class="btn-close" ng-click="$ctrl.cancel()"></button>
+  </div>
+  
+  <form name="patientForm" ng-submit="$ctrl.savePatient(patientForm)" novalidate>
+    <div class="modal-body">
+      <!-- Alert for errors -->
+      <div class="alert alert-danger" ng-if="$ctrl.formError">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        {{$ctrl.formError}}
+      </div>
+      
+      <div class="row g-3">
+        <!-- Personal Information -->
+        <div class="col-12">
+          <h6 class="border-bottom pb-2">Personal Information</h6>
+        </div>
+        
+        <div class="col-md-6">
+          <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="name" 
+            name="name"
+            ng-model="$ctrl.patient.name" 
+            required
+            ng-class="{'is-invalid': patientForm.name.$invalid && patientForm.name.$touched}">
+          <div class="invalid-feedback" ng-show="patientForm.name.$invalid && patientForm.name.$touched">
+            Full name is required
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <label for="phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+          <input 
+            type="tel" 
+            class="form-control" 
+            id="phone" 
+            name="phone"
+            ng-model="$ctrl.patient.phone" 
+            required
+            ng-class="{'is-invalid': patientForm.phone.$invalid && patientForm.phone.$touched}">
+          <div class="invalid-feedback" ng-show="patientForm.phone.$invalid && patientForm.phone.$touched">
+            Phone number is required
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <label for="email" class="form-label">Email Address</label>
+          <input 
+            type="email" 
+            class="form-control" 
+            id="email" 
+            name="email"
+            ng-model="$ctrl.patient.email"
+            ng-class="{'is-invalid': patientForm.email.$invalid && patientForm.email.$touched}">
+          <div class="invalid-feedback" ng-show="patientForm.email.$invalid && patientForm.email.$touched">
+            Please enter a valid email address
+          </div>
+        </div>
+        
+        <!-- Emergency Contact -->
+        <div class="col-12">
+          <h6 class="border-bottom pb-2 mt-3">Emergency Contact</h6>
+        </div>
+        
+        <div class="col-md-6">
+          <label for="emergency_contact_name" class="form-label">Contact Name</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="emergency_contact_name" 
+            name="emergency_contact_name"
+            ng-model="$ctrl.patient.emergency_contact_name">
+        </div>
+        
+        <div class="col-md-6">
+          <label for="emergency_contact_phone" class="form-label">Contact Phone</label>
+          <input 
+            type="tel" 
+            class="form-control" 
+            id="emergency_contact_phone" 
+            name="emergency_contact_phone"
+            ng-model="$ctrl.patient.emergency_contact_phone">
+        </div>
+        
+        <!-- Insurance Information -->
+        <div class="col-12">
+          <h6 class="border-bottom pb-2 mt-3">Insurance Information</h6>
+        </div>
+        
+        <div class="col-md-6">
+          <label for="insurance_company_id" class="form-label">Insurance Company</label>
+          <select 
+            class="form-select" 
+            id="insurance_company_id" 
+            name="insurance_company_id"
+            ng-model="$ctrl.patient.insurance_company_id">
+            <option value="">-- No Insurance --</option>
+            <option ng-repeat="company in $ctrl.insuranceCompanies" value="{{company.id}}">
+              {{company.name}}
+            </option>
+          </select>
+        </div>
+        
+        <div class="col-md-6">
+          <label for="insurance_number" class="form-label">Insurance Number</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="insurance_number" 
+            name="insurance_number"
+            ng-model="$ctrl.patient.insurance_number"
+            ng-disabled="!$ctrl.patient.insurance_company_id">
+        </div>
+        
+        <!-- CUD Information -->
+        <div class="col-12">
+          <h6 class="border-bottom pb-2 mt-3">CUD Information</h6>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="form-check form-switch">
+            <input 
+              class="form-check-input" 
+              type="checkbox" 
+              id="has_cud" 
+              ng-model="$ctrl.patient.has_cud">
+            <label class="form-check-label" for="has_cud">
+              Has CUD
+            </label>
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <label for="cud_type" class="form-label">CUD Type</label>
+          <select 
+            class="form-select" 
+            id="cud_type" 
+            name="cud_type"
+            ng-model="$ctrl.patient.cud_type"
+            ng-disabled="!$ctrl.patient.has_cud">
+            <option value="">-- Select CUD Type --</option>
+            <option value="A">Type A</option>
+            <option value="B">Type B</option>
+            <option value="C">Type C</option>
+            <option value="TEA">TEA</option>
+            <option value="TDAH">TDAH</option>
+          </select>
+        </div>
+        
+        <!-- Assigned Professionals -->
+        <div class="col-12">
+          <h6 class="border-bottom pb-2 mt-3">Assigned Professionals</h6>
+        </div>
+        
+        <div class="col-12">
+          <label for="professionals" class="form-label">Select Professionals</label>
+          <select 
+            class="form-select" 
+            id="professionals" 
+            name="professionals"
+            ng-model="$ctrl.selectedProfessionals"
+            multiple
+            size="5">
+            <option ng-repeat="professional in $ctrl.professionals" value="{{professional.id}}">
+              {{professional.name}} ({{professional.specialty}})
+            </option>
+          </select>
+          <small class="form-text text-muted">
+            Hold Ctrl/Cmd to select multiple professionals
+          </small>
+        </div>
+        
+        <!-- Status -->
+        <div class="col-12">
+          <h6 class="border-bottom pb-2 mt-3">Status</h6>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="form-check form-switch">
+            <input 
+              class="form-check-input" 
+              type="checkbox" 
+              id="is_active" 
+              ng-model="$ctrl.patient.is_active">
+            <label class="form-check-label" for="is_active">
+              Active Patient
+            </label>
+          </div>
+          <small class="form-text text-muted">
+            Inactive patients won't appear in scheduling options
+          </small>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" ng-click="$ctrl.cancel()">Cancel</button>
+      <button 
+        type="submit" 
+        class="btn btn-primary" 
+        ng-disabled="patientForm.$invalid || $ctrl.isSubmitting">
+        <span ng-if="$ctrl.isSubmitting">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Saving...
+        </span>
+        <span ng-if="!$ctrl.isSubmitting">
+          <i class="bi" ng-class="{'bi-plus-lg': !$ctrl.editMode, 'bi-check-lg': $ctrl.editMode}"></i>
+          {{$ctrl.editMode ? 'Update Patient' : 'Add Patient'}}
+        </span>
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,293 @@
+<div>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light navbar-casapicto mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <i class="bi bi-heart-pulse me-2"></i>
+        Casa Picto
+      </a>
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" ng-href="#/professionals">
+              <i class="bi bi-people me-1"></i>
+              Professionals
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" ng-href="#/patients">
+              <i class="bi bi-person me-1"></i>
+              Patients
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" ng-href="#/schedule">
+              <i class="bi bi-calendar-week me-1"></i>
+              Schedule
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" ng-href="#/reports">
+              <i class="bi bi-bar-chart me-1"></i>
+              Reports
+            </a>
+          </li>
+        </ul>
+        
+        <div class="d-flex align-items-center">
+          <span class="me-3">
+            <i class="bi bi-person-circle me-1"></i>
+            {{$ctrl.currentUser.name || $ctrl.currentUser.username}}
+          </span>
+          <button class="btn btn-outline-secondary btn-sm" ng-click="$ctrl.logout()">
+            <i class="bi bi-box-arrow-right me-1"></i>
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="container">
+    <!-- Page Header with Back Button -->
+    <div class="row mb-4">
+      <div class="col-auto">
+        <button class="btn btn-outline-secondary" ng-click="$ctrl.goBack()">
+          <i class="bi bi-arrow-left me-1"></i>
+          Back to List
+        </button>
+      </div>
+      <div class="col">
+        <h2 ng-if="$ctrl.patient">
+          <i class="bi bi-person me-2"></i>
+          {{$ctrl.patient.name}}
+        </h2>
+        <h2 ng-if="!$ctrl.patient && !$ctrl.isLoading">
+          <i class="bi bi-person me-2"></i>
+          Patient Details
+        </h2>
+      </div>
+      <div class="col-auto" ng-if="$ctrl.patient">
+        <button class="btn btn-primary" ng-click="$ctrl.editPatient()">
+          <i class="bi bi-pencil me-1"></i>
+          Edit Patient
+        </button>
+      </div>
+    </div>
+    
+    <!-- Error Alert -->
+    <div class="alert alert-danger" ng-if="$ctrl.error">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      {{$ctrl.error}}
+    </div>
+    
+    <!-- Loading Indicator -->
+    <div class="text-center py-5" ng-if="$ctrl.isLoading">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2 mb-0">Loading patient details...</p>
+    </div>
+    
+    <!-- Patient Details -->
+    <div ng-if="$ctrl.patient && !$ctrl.isLoading">
+      <!-- Tabs Navigation -->
+      <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+          <a class="nav-link" ng-class="{active: $ctrl.activeTab === 'info'}" href ng-click="$event.preventDefault(); $ctrl.setActiveTab('info')">
+            <i class="bi bi-info-circle me-1"></i>
+            Information
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" ng-class="{active: $ctrl.activeTab === 'medical'}" href ng-click="$event.preventDefault(); $ctrl.setActiveTab('medical')">
+            <i class="bi bi-clipboard-plus me-1"></i>
+            Medical History
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" ng-class="{active: $ctrl.activeTab === 'sessions'}" href ng-click="$event.preventDefault(); $ctrl.setActiveTab('sessions')">
+            <i class="bi bi-calendar-check me-1"></i>
+            Sessions
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" ng-class="{active: $ctrl.activeTab === 'payments'}" href ng-click="$event.preventDefault(); $ctrl.setActiveTab('payments')">
+            <i class="bi bi-currency-dollar me-1"></i>
+            Payments
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" ng-class="{active: $ctrl.activeTab === 'files'}" href ng-click="$event.preventDefault(); $ctrl.setActiveTab('files')">
+            <i class="bi bi-file-earmark me-1"></i>
+            Files
+          </a>
+        </li>
+      </ul>
+      
+      <!-- Info Tab Content -->
+      <div ng-if="$ctrl.activeTab === 'info'" class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h5 class="border-bottom pb-2 mb-3">Personal Information</h5>
+              
+              <div class="mb-3">
+                <label class="form-label fw-bold">Full Name</label>
+                <p>{{$ctrl.patient.name}}</p>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label fw-bold">Phone Number</label>
+                <p>{{$ctrl.patient.phone}}</p>
+              </div>
+              
+              <div class="mb-3" ng-if="$ctrl.patient.email">
+                <label class="form-label fw-bold">Email Address</label>
+                <p>{{$ctrl.patient.email}}</p>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label fw-bold">Status</label>
+                <p>
+                  <span class="badge rounded-pill" ng-class="{'bg-success': $ctrl.patient.is_active, 'bg-danger': !$ctrl.patient.is_active}">
+                    <i class="bi" ng-class="{'bi-check-circle-fill': $ctrl.patient.is_active, 'bi-x-circle-fill': !$ctrl.patient.is_active}"></i>
+                    {{$ctrl.patient.is_active ? 'Active' : 'Inactive'}}
+                  </span>
+                </p>
+              </div>
+              
+              <h5 class="border-bottom pb-2 mb-3 mt-4">Emergency Contact</h5>
+              
+              <div class="mb-3" ng-if="$ctrl.patient.emergency_contact_name">
+                <label class="form-label fw-bold">Contact Name</label>
+                <p>{{$ctrl.patient.emergency_contact_name}}</p>
+              </div>
+              
+              <div class="mb-3" ng-if="$ctrl.patient.emergency_contact_phone">
+                <label class="form-label fw-bold">Contact Phone</label>
+                <p>{{$ctrl.patient.emergency_contact_phone}}</p>
+              </div>
+              
+              <div class="mb-3" ng-if="!$ctrl.patient.emergency_contact_name && !$ctrl.patient.emergency_contact_phone">
+                <p class="text-muted fst-italic">No emergency contact information provided.</p>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <h5 class="border-bottom pb-2 mb-3">Insurance Information</h5>
+              
+              <div class="mb-3" ng-if="$ctrl.patient.insurance_company">
+                <label class="form-label fw-bold">Insurance Company</label>
+                <p>{{$ctrl.patient.insurance_company.name}}</p>
+              </div>
+              
+              <div class="mb-3" ng-if="$ctrl.patient.insurance_number">
+                <label class="form-label fw-bold">Insurance Number</label>
+                <p>{{$ctrl.patient.insurance_number}}</p>
+              </div>
+              
+              <div class="mb-3" ng-if="!$ctrl.patient.insurance_company">
+                <p class="text-muted fst-italic">No insurance information provided.</p>
+              </div>
+              
+              <h5 class="border-bottom pb-2 mb-3 mt-4">CUD Information</h5>
+              
+              <div class="mb-3">
+                <label class="form-label fw-bold">CUD Status</label>
+                <p>
+                  <span class="badge rounded-pill" ng-class="{'bg-info': $ctrl.patient.has_cud, 'bg-secondary': !$ctrl.patient.has_cud}">
+                    <i class="bi" ng-class="{'bi-check-circle-fill': $ctrl.patient.has_cud, 'bi-x-circle-fill': !$ctrl.patient.has_cud}"></i>
+                    {{$ctrl.patient.has_cud ? 'Has CUD' : 'No CUD'}}
+                  </span>
+                </p>
+              </div>
+              
+              <div class="mb-3" ng-if="$ctrl.patient.has_cud && $ctrl.patient.cud_type">
+                <label class="form-label fw-bold">CUD Type</label>
+                <p>{{$ctrl.patient.cud_type}}</p>
+              </div>
+              
+              <h5 class="border-bottom pb-2 mb-3 mt-4">Assigned Professionals</h5>
+              
+              <div class="list-group">
+                <div class="list-group-item" ng-repeat="pro in $ctrl.patient.professionals">
+                  <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1">{{pro.name}}</h6>
+                    <small>Since {{pro.start_date | date:'mediumDate'}}</small>
+                  </div>
+                  <p class="mb-1">{{pro.specialty}}</p>
+                </div>
+                
+                <div class="list-group-item text-muted fst-italic" ng-if="!$ctrl.patient.professionals || $ctrl.patient.professionals.length === 0">
+                  No professionals assigned to this patient.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Medical History Tab Content (placeholder) -->
+      <div ng-if="$ctrl.activeTab === 'medical'" class="card">
+        <div class="card-body">
+          <h5 class="border-bottom pb-2 mb-3">Medical History</h5>
+          
+          <!-- Placeholder for medical history - to be implemented -->
+          <p class="text-center py-4 text-muted">
+            <i class="bi bi-clipboard-plus fs-1"></i>
+            <br>
+            Medical history view will be implemented in a future update.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Sessions Tab Content (placeholder) -->
+      <div ng-if="$ctrl.activeTab === 'sessions'" class="card">
+        <div class="card-body">
+          <h5 class="border-bottom pb-2 mb-3">Sessions History</h5>
+          
+          <!-- Placeholder for sessions - to be implemented -->
+          <p class="text-center py-4 text-muted">
+            <i class="bi bi-calendar-check fs-1"></i>
+            <br>
+            Sessions history will be implemented in a future update.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Payments Tab Content (placeholder) -->
+      <div ng-if="$ctrl.activeTab === 'payments'" class="card">
+        <div class="card-body">
+          <h5 class="border-bottom pb-2 mb-3">Payment History</h5>
+          
+          <!-- Placeholder for payments - to be implemented -->
+          <p class="text-center py-4 text-muted">
+            <i class="bi bi-currency-dollar fs-1"></i>
+            <br>
+            Payment history will be implemented in a future update.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Files Tab Content (placeholder) -->
+      <div ng-if="$ctrl.activeTab === 'files'" class="card">
+        <div class="card-body">
+          <h5 class="border-bottom pb-2 mb-3">Patient Files</h5>
+          
+          <!-- Placeholder for file uploads - to be implemented -->
+          <p class="text-center py-4 text-muted">
+            <i class="bi bi-file-earmark fs-1"></i>
+            <br>
+            File management will be implemented in a future update.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
