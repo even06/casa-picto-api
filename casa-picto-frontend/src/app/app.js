@@ -18,6 +18,14 @@ angular.module('casaPictoApp')
         template: '<professional-detail></professional-detail>',
         authenticated: true
       })
+      .when('/patients', {
+        template: '<patients></patients>',
+        authenticated: true
+      })
+      .when('/patients/:id', {
+        template: '<patient-detail></patient-detail>',
+        authenticated: true
+      })
       .otherwise({
         redirectTo: '/login'
       });

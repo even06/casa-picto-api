@@ -1,3 +1,4 @@
+// main.js 
 // Import styles
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './src/assets/css/styles.css';
@@ -22,6 +23,7 @@ import './src/app/services/api-config.service';
 import './src/app/services/auth.service';
 import './src/app/services/professional.service';
 import './src/app/services/professional-availability.service';
+import './src/app/services/patient.service';
 import './src/app/services/http-interceptor.service';
 
 // Import components
@@ -30,3 +32,4 @@ import './src/app/components/professionals/professionals.component';
 import './src/app/components/professionals/professional-form.component';
 import './src/app/components/professionals/professional-detail.component';
 import './src/app/components/professionals/professional-availability.component';
+import './src/app/components/patients/patients.component';
