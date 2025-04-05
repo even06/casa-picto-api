@@ -13,6 +13,7 @@ import * as bootstrap from 'bootstrap';
 
 window.$ = window.jQuery = jquery;
 window.bootstrap = bootstrap;
+
 // Import our app module
 import './src/app/app';
 
@@ -20,9 +21,12 @@ import './src/app/app';
 import './src/app/services/api-config.service';
 import './src/app/services/auth.service';
 import './src/app/services/professional.service';
+import './src/app/services/professional-availability.service';
 import './src/app/services/http-interceptor.service';
 
 // Import components
 import './src/app/components/login/login.component';
 import './src/app/components/professionals/professionals.component';
 import './src/app/components/professionals/professional-form.component';
+import './src/app/components/professionals/professional-detail.component';
+import './src/app/components/professionals/professional-availability.component';

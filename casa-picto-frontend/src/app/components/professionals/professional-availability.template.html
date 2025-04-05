@@ -1,0 +1,124 @@
+<div class="professional-availability">
+  <!-- Section header -->
+  <div class="col-12 mb-3">
+    <h6 class="border-bottom pb-2 mt-4">Availability</h6>
+    <p class="text-muted small">Configure when this professional is available to see patients.</p>
+  </div>
+  
+  <!-- Error and success messages -->
+  <div class="alert alert-danger" ng-if="$ctrl.error">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    {{$ctrl.error}}
+  </div>
+  
+  <div class="alert alert-success" ng-if="$ctrl.success">
+    <i class="bi bi-check-circle-fill me-2"></i>
+    {{$ctrl.success}}
+  </div>
+  
+  <!-- Loading indicator -->
+  <div class="text-center py-3" ng-if="$ctrl.isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2 mb-0">Loading availability data...</p>
+  </div>
+  
+  <!-- Availability table -->
+  <div class="table-responsive" ng-if="!$ctrl.isLoading">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Start Time</th>
+          <th>End Time</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="day in $ctrl.availability">
+          <td>{{$ctrl.getDayDisplayName(day.day_of_week)}}</td>
+          <td>{{day.start_time || 'Not set'}}</td>
+          <td>{{day.end_time || 'Not set'}}</td>
+          <td>
+            <span class="badge rounded-pill" ng-class="{'bg-success': $ctrl.hasAvailability(day), 'bg-danger': !$ctrl.hasAvailability(day)}">
+              <i class="bi" ng-class="{'bi-check-circle-fill': $ctrl.hasAvailability(day), 'bi-x-circle-fill': !$ctrl.hasAvailability(day)}"></i>
+              {{$ctrl.hasAvailability(day) ? 'Available' : 'Not Available'}}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary" ng-click="$ctrl.selectDay(day)">
+              <i class="bi bi-pencil"></i> Edit
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- Edit form (shown when a day is selected) -->
+  <div class="card mt-3" ng-if="$ctrl.selectedDay">
+    <div class="card-header">
+      <i class="bi bi-clock me-2"></i>
+      Edit {{$ctrl.getDayDisplayName($ctrl.selectedDay.day_of_week)}} Availability
+    </div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-5">
+          <label class="form-label">Start Time</label>
+          <select class="form-select" ng-model="$ctrl.currentAvailability.start_time">
+            <option value="">-- Select Start Time --</option>
+            <option ng-repeat="time in $ctrl.timeSlots" value="{{time}}">{{time}}</option>
+          </select>
+        </div>
+        
+        <div class="col-md-5">
+          <label class="form-label">End Time</label>
+          <select class="form-select" ng-model="$ctrl.currentAvailability.end_time">
+            <option value="">-- Select End Time --</option>
+            <option ng-repeat="time in $ctrl.timeSlots" value="{{time}}">{{time}}</option>
+          </select>
+        </div>
+        
+        <div class="col-md-2 d-flex align-items-end">
+          <div class="form-check form-switch">
+            <input 
+              class="form-check-input" 
+              type="checkbox" 
+              id="is_active_day" 
+              ng-model="$ctrl.currentAvailability.is_active">
+            <label class="form-check-label" for="is_active_day">
+              Active
+            </label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="alert alert-info mt-3" ng-if="$ctrl.currentAvailability.start_time && $ctrl.currentAvailability.end_time">
+        <i class="bi bi-info-circle-fill me-2"></i>
+        Professional will be available on {{$ctrl.getDayDisplayName($ctrl.currentAvailability.day_of_week)}} 
+        from {{$ctrl.currentAvailability.start_time}} to {{$ctrl.currentAvailability.end_time}}.
+      </div>
+    </div>
+    <div class="card-footer d-flex justify-content-end">
+      <button type="button" class="btn btn-outline-secondary me-2" ng-click="$ctrl.cancelEdit()">
+        Cancel
+      </button>
+      <button 
+        type="button" 
+        class="btn btn-primary" 
+        ng-click="$ctrl.saveAvailability()"
+        ng-disabled="$ctrl.isSubmitting">
+        <span ng-if="$ctrl.isSubmitting">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Saving...
+        </span>
+        <span ng-if="!$ctrl.isSubmitting">
+          <i class="bi bi-check-lg"></i>
+          Save Availability
+        </span>
+      </button>
+    </div>
+  </div>
+</div>

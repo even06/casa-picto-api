@@ -71,6 +71,15 @@ function ProfessionalsController($location, authService, professionalService, $u
     });
   };
   
+  ctrl.viewProfessional = function(id) {
+    $location.path('/professionals/' + id);
+  };
+  
+  // Edit professional in the detail view
+  ctrl.editProfessional = function() {
+    ctrl.openEditModal(ctrl.professional);
+  };
+
   // Open modal for editing an existing professional
   ctrl.openEditModal = function(professional, event) {
     // Stop event propagation to prevent navigation
@@ -174,11 +183,6 @@ function ProfessionalsController($location, authService, professionalService, $u
   ctrl.changePage = function(page) {
     ctrl.pagination.page = page;
     ctrl.loadProfessionals();
-  };
-  
-  // View professional details
-  ctrl.viewProfessional = function(id) {
-    $location.path('/professionals/' + id);
   };
   
   // Logout

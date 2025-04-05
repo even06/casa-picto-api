@@ -14,6 +14,10 @@ angular.module('casaPictoApp')
         template: '<professionals></professionals>',
         authenticated: true
       })
+      .when('/professionals/:id', {
+        template: '<professional-detail></professional-detail>',
+        authenticated: true
+      })
       .otherwise({
         redirectTo: '/login'
       });
