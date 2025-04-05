@@ -207,6 +207,7 @@
                     </span>
                   </div>
                 </td>
+                <!-- Just the Status column from the patients list template -->
                 <td>
                   <span class="badge rounded-pill" ng-class="{'bg-success': patient.is_active, 'bg-danger': !patient.is_active}">
                     <i class="bi" ng-class="{'bi-check-circle-fill': patient.is_active, 'bi-x-circle-fill': !patient.is_active}"></i>
@@ -215,7 +216,7 @@
                   <div class="mt-1" ng-if="patient.has_cud">
                     <span class="badge bg-info">
                       <i class="bi bi-file-earmark-medical"></i>
-                      CUD {{patient.cud_type ? (' - ' + patient.cud_type) : ''}}
+                      CUD
                     </span>
                   </div>
                 </td>

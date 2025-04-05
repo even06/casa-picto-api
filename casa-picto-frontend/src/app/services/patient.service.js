@@ -54,5 +54,23 @@ angular.module('casaPictoApp')
         });
     };
     
+    // Get all unique CUD types from patients
+    service.getCudTypes = function() {
+      // This could be replaced with a dedicated API endpoint in the future
+      return service.getPatients({ limit: 1000 })
+        .then(function(data) {
+          var patients = data.patients || [];
+          var types = new Set();
+          
+          patients.forEach(function(patient) {
+            if (patient.has_cud && patient.cud_type && patient.cud_type.trim()) {
+              types.add(patient.cud_type.trim());
+            }
+          });
+          
+          return Array.from(types).sort();
+        });
+    };
+    
     return service;
   }]);

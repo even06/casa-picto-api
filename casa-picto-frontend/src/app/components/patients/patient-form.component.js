@@ -9,16 +9,18 @@ angular.module('casaPictoApp')
       close: '&',
       dismiss: '&'
     },
-    controller: ['$http', 'apiConfigService', 'insuranceService', PatientFormController]
+    controller: ['$http', 'apiConfigService', 'insuranceService', 'patientService', PatientFormController]
   });
 
-function PatientFormController($http, apiConfigService, insuranceService) {
+function PatientFormController($http, apiConfigService, insuranceService, patientService) {
   var ctrl = this;
   
   // UI states
   ctrl.isSubmitting = false;
   ctrl.formError = null;
   ctrl.insuranceCompanies = [];
+  ctrl.cudTypes = [];
+  ctrl.newCudType = '';
   
   // Initialize component
   ctrl.$onInit = function() {
@@ -53,6 +55,9 @@ function PatientFormController($http, apiConfigService, insuranceService) {
     // Load insurance companies
     loadInsuranceCompanies();
     
+    // Load existing CUD types
+    loadCudTypes();
+    
     // Debugging
     console.log('Patient Form Component Initialized', {
       patient: ctrl.patient,
@@ -69,6 +74,31 @@ function PatientFormController($http, apiConfigService, insuranceService) {
       })
       .catch(function(error) {
         console.error('Error loading insurance companies', error);
+      });
+  }
+  
+  // Load existing CUD types from patients
+  function loadCudTypes() {
+    // Get all patients to extract unique CUD types
+    patientService.getPatients({ limit: 100 })
+      .then(function(data) {
+        var patients = data.patients || [];
+        var typesSet = new Set();
+        
+        // Extract unique, non-empty CUD types
+        patients.forEach(function(patient) {
+          if (patient.has_cud && patient.cud_type && patient.cud_type.trim()) {
+            typesSet.add(patient.cud_type.trim());
+          }
+        });
+        
+        // Convert Set to Array
+        ctrl.cudTypes = Array.from(typesSet).sort();
+        
+        console.log('Loaded CUD types:', ctrl.cudTypes);
+      })
+      .catch(function(error) {
+        console.error('Error loading CUD types', error);
       });
   }
   
@@ -92,6 +122,11 @@ function PatientFormController($http, apiConfigService, insuranceService) {
     ctrl.isSubmitting = true;
     ctrl.formError = null;
     
+    // Handle "Other" CUD type selection
+    if (ctrl.patient.has_cud && ctrl.patient.cud_type === 'other' && ctrl.newCudType) {
+      ctrl.patient.cud_type = ctrl.newCudType.trim();
+    }
+    
     var url, method;
     
     if (ctrl.editMode) {
@@ -114,7 +149,7 @@ function PatientFormController($http, apiConfigService, insuranceService) {
       insurance_company_id: ctrl.patient.insurance_company_id,
       insurance_number: ctrl.patient.insurance_number,
       has_cud: ctrl.patient.has_cud,
-      cud_type: ctrl.patient.cud_type,
+      cud_type: ctrl.patient.has_cud ? ctrl.patient.cud_type : '', // Only send cud_type if has_cud is true
       is_active: ctrl.patient.is_active,
       professionals: ctrl.selectedProfessionals
     };

@@ -121,11 +121,11 @@
             ng-disabled="!$ctrl.patient.insurance_company_id">
         </div>
         
-        <!-- CUD Information -->
+        <!-- CUD Information section in patient-form.template.html -->
         <div class="col-12">
-          <h6 class="border-bottom pb-2 mt-3">CUD Information</h6>
+          <h6 class="border-bottom pb-2 mt-3">Información de Diagnóstico</h6>
         </div>
-        
+
         <div class="col-md-6">
           <div class="form-check form-switch">
             <input 
@@ -134,26 +134,46 @@
               id="has_cud" 
               ng-model="$ctrl.patient.has_cud">
             <label class="form-check-label" for="has_cud">
-              Has CUD
+              Tiene CUD
             </label>
           </div>
         </div>
-        
+
         <div class="col-md-6">
-          <label for="cud_type" class="form-label">CUD Type</label>
-          <select 
-            class="form-select" 
-            id="cud_type" 
-            name="cud_type"
-            ng-model="$ctrl.patient.cud_type"
+          <label for="cud_type" class="form-label">Diagnóstico</label>
+          <div ng-if="$ctrl.cudTypes.length > 0">
+            <div class="input-group">
+              <select 
+                class="form-select" 
+                id="cud_type" 
+                name="cud_type"
+                ng-model="$ctrl.patient.cud_type"
+                ng-disabled="!$ctrl.patient.has_cud">
+                <option value="">-- Seleccionar Diagnóstico --</option>
+                <option ng-repeat="type in $ctrl.cudTypes" value="{{type}}">
+                  {{type}}
+                </option>
+                <option value="other">Agregar Nuevo Diagnóstico...</option>
+              </select>
+            </div>
+            
+            <!-- Show input field if "Agregar Nuevo Diagnóstico" is selected -->
+            <input 
+              type="text" 
+              class="form-control mt-2" 
+              placeholder="Ingrese nuevo diagnóstico"
+              ng-model="$ctrl.newCudType" 
+              ng-if="$ctrl.patient.cud_type === 'other' && $ctrl.patient.has_cud">
+          </div>
+          
+          <!-- Fallback to text input if cud types haven't loaded -->
+          <input 
+            type="text" 
+            class="form-control" 
+            placeholder="Ingrese diagnóstico"
+            ng-model="$ctrl.patient.cud_type" 
+            ng-if="(!$ctrl.cudTypes.length && $ctrl.patient.has_cud)"
             ng-disabled="!$ctrl.patient.has_cud">
-            <option value="">-- Select CUD Type --</option>
-            <option value="A">Type A</option>
-            <option value="B">Type B</option>
-            <option value="C">Type C</option>
-            <option value="TEA">TEA</option>
-            <option value="TDAH">TDAH</option>
-          </select>
         </div>
         
         <!-- Assigned Professionals -->

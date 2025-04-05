@@ -196,20 +196,21 @@
                 <p class="text-muted fst-italic">No insurance information provided.</p>
               </div>
               
-              <h5 class="border-bottom pb-2 mb-3 mt-4">CUD Information</h5>
-              
+              <!-- Just the CUD Information section from the patient detail template -->
+              <h5 class="border-bottom pb-2 mb-3 mt-4">Información de CUD</h5>
+
               <div class="mb-3">
-                <label class="form-label fw-bold">CUD Status</label>
+                <label class="form-label fw-bold">Estado de CUD</label>
                 <p>
                   <span class="badge rounded-pill" ng-class="{'bg-info': $ctrl.patient.has_cud, 'bg-secondary': !$ctrl.patient.has_cud}">
                     <i class="bi" ng-class="{'bi-check-circle-fill': $ctrl.patient.has_cud, 'bi-x-circle-fill': !$ctrl.patient.has_cud}"></i>
-                    {{$ctrl.patient.has_cud ? 'Has CUD' : 'No CUD'}}
+                    {{$ctrl.patient.has_cud ? 'Tiene CUD' : 'No tiene CUD'}}
                   </span>
                 </p>
               </div>
-              
+
               <div class="mb-3" ng-if="$ctrl.patient.has_cud && $ctrl.patient.cud_type">
-                <label class="form-label fw-bold">CUD Type</label>
+                <label class="form-label fw-bold">Diagnóstico</label>
                 <p>{{$ctrl.patient.cud_type}}</p>
               </div>
               
