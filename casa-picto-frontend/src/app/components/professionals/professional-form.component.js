@@ -9,16 +9,17 @@ angular.module('casaPictoApp')
       close: '&',
       dismiss: '&'
     },
-    controller: ['$scope', '$http', 'apiConfigService', ProfessionalFormController]
+    controller: ['$scope', '$http', 'apiConfigService', 'professionalService', ProfessionalFormController]
   });
 
-function ProfessionalFormController($scope, $http, apiConfigService) {
+function ProfessionalFormController($scope, $http, apiConfigService, professionalService) {
   var ctrl = this;
   
   // UI states
   ctrl.isSubmitting = false;
   ctrl.formError = null;
   ctrl.showPassword = false;
+  ctrl.specialties = []; // Available specialties
   
   // Initialize component
   ctrl.$onInit = function() {
@@ -33,12 +34,31 @@ function ProfessionalFormController($scope, $http, apiConfigService) {
     
     ctrl.editMode = ctrl.resolve.editMode || false;
     
+    // Load specialties for dropdown
+    loadSpecialties();
+    
     // Debugging
     console.log('Professional Form Component Initialized', {
       professional: ctrl.professional,
       editMode: ctrl.editMode
     });
   };
+  
+  // Load available specialties
+  function loadSpecialties() {
+    professionalService.getProfessionals({limit: 100})
+      .then(function(data) {
+        ctrl.specialties = data.specialties || [];
+        
+        // If editing a professional with a specialty not in the list, add it
+        if (ctrl.professional.specialty && !ctrl.specialties.includes(ctrl.professional.specialty)) {
+          ctrl.specialties.push(ctrl.professional.specialty);
+        }
+      })
+      .catch(function(error) {
+        console.error('Error loading specialties', error);
+      });
+  }
   
   // Toggle password visibility
   ctrl.togglePassword = function() {
@@ -70,7 +90,6 @@ function ProfessionalFormController($scope, $http, apiConfigService) {
     
     if (ctrl.editMode) {
       // Update existing professional
-      console.log(ctrl.professional);
       url = apiConfigService.buildUrl('users/update') + '?id=' + ctrl.professional.user_id;
       method = 'PUT';
     } else {

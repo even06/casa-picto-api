@@ -39,6 +39,30 @@
         
         <div class="col-md-6">
           <label for="specialty" class="form-label">Specialty <span class="text-danger">*</span></label>
+          <div ng-if="$ctrl.specialties.length > 0">
+            <select 
+              class="form-select" 
+              id="specialty" 
+              name="specialty"
+              ng-model="$ctrl.professional.specialty" 
+              required
+              ng-class="{'is-invalid': professionalForm.specialty.$invalid && professionalForm.specialty.$touched}">
+              <option value="">-- Select Specialty --</option>
+              <option ng-repeat="specialty in $ctrl.specialties" value="{{specialty}}">{{specialty}}</option>
+              <option value="other">Add New Specialty...</option>
+            </select>
+            <div class="invalid-feedback" ng-show="professionalForm.specialty.$invalid && professionalForm.specialty.$touched">
+              Specialty is required
+            </div>
+            <!-- Show input field if "Add New Specialty" is selected -->
+            <input 
+              type="text" 
+              class="form-control mt-2" 
+              placeholder="Enter new specialty"
+              ng-model="$ctrl.professional.specialty" 
+              ng-if="$ctrl.professional.specialty === 'other'">
+          </div>
+          <!-- Fallback to text input if specialties haven't loaded -->
           <input 
             type="text" 
             class="form-control" 
@@ -46,6 +70,7 @@
             name="specialty"
             ng-model="$ctrl.professional.specialty" 
             required
+            ng-if="!$ctrl.specialties.length"
             ng-class="{'is-invalid': professionalForm.specialty.$invalid && professionalForm.specialty.$touched}">
           <div class="invalid-feedback" ng-show="professionalForm.specialty.$invalid && professionalForm.specialty.$touched">
             Specialty is required
@@ -120,6 +145,9 @@
           </small>
         </div>
       </div>
+      
+      <!-- Availability section will be added in a separate component -->
+      
     </div>
     
     <div class="modal-footer">
