@@ -70,7 +70,8 @@ function ProfessionalFormController($scope, $http, apiConfigService) {
     
     if (ctrl.editMode) {
       // Update existing professional
-      url = apiConfigService.buildUrl('users/update') + '?id=' + ctrl.professional.id;
+      console.log(ctrl.professional);
+      url = apiConfigService.buildUrl('users/update') + '?id=' + ctrl.professional.user_id;
       method = 'PUT';
     } else {
       // Create new professional

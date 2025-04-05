@@ -76,6 +76,7 @@ try {
     $query = "
         SELECT 
             p.id,
+            u.id as 'uid',
             p.name,
             p.specialty,
             p.is_active,
@@ -107,6 +108,7 @@ try {
     while ($row = $result->fetch_assoc()) {
         $professionals[] = [
             'id' => $row['id'],
+            'user_id' => $row['uid'],
             'name' => $row['name'],
             'username' => $row['username'],
             'specialty' => $row['specialty'],

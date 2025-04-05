@@ -129,7 +129,7 @@ body {
 /* Modal visibility fixes */
 .modal {
   display: block !important;
-  opacity: 1 !important;
+  opacity: 0.5 !important;
 }
 
 .modal-backdrop {
